@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta charset="UTF-8">
+    <title>เข้าสู่ระบบ</title>
+    <style>
+      @font-face {
+        font-family: 'TH SarabunPSK';
+        src: url('https://drive.google.com/uc?export=download&id=17DpJQEjfeWVHb7NI1OiMOEvijxxEPL-p') format('truetype');
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      * {
+        font-family: 'TH SarabunPSK', sans-serif;
+        font-size: 1.3em;     /* ขยายฟอนต์หลักทั้งหน้า */
+      }
+
+      body {
+        background: url('https://raw.githubusercontent.com/FlexIe222/election-assets/refs/heads/main/img7.png') no-repeat center center fixed;
+        background-size: cover;
+        min-height: 100vh;
+        margin: 0;
+        padding: 0;
+      }
+      .login-box {
+        background: rgba(255,255,255,0.90);
+        border-radius: 16px;
+        box-shadow: 0 0 20px rgba(0,0,0,0.2);
+        padding: 56px;
+        max-width: 400px;
+        margin: 100px auto;
+        text-align: center;
+      }
+      input[type="text"], input[type="password"] {
+        width: 90%;
+        margin: 10px 0;
+        padding: 10px;
+        border: 1px solid #aaa;
+        border-radius: 6px;
+        font-size: 20px;
+      }
+      button {
+        padding: 10px 25px;
+        background: #1976d2;
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        font-size: 26px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+      #error {
+        color: #e53935;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="login-box">
+      <h2>ระบบงานเลือกตั้งท้องถิ่น</h2>
+      <input type="text" id="username" placeholder="ชื่อผู้ใช้">
+      <input type="password" id="password" placeholder="รหัสผ่าน">
+      <button onclick="login()">เข้าสู่ระบบ</button>
+      <div id="error"></div>
+    </div>
+
+    <script>
+      function login() {
+        const user = document.getElementById("username").value.trim();
+        const pass = document.getElementById("password").value;
+
+        if (!user || !pass) {
+          document.getElementById("error").innerText = "กรุณากรอกชื่อผู้ใช้และรหัสผ่าน";
+          return;
+        }
+
+        google.script.run.withSuccessHandler(function(result) {
+          if (result) {
+            const data = JSON.parse(result);
+            sessionStorage.setItem("username", user);
+            sessionStorage.setItem("name", data.name);
+            sessionStorage.setItem("role", data.role);
+            sessionStorage.setItem("authority", data.authority);
+            sessionStorage.setItem("team", data.team);
+            window.location.href = "?page=dashboard";
+          } else {
+            document.getElementById("error").innerText = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+          }
+        }).checkLogin(user, pass);
+      }
+    </script>
+  </body>
+</html>
